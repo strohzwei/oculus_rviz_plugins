@@ -61,6 +61,9 @@ Oculus::~Oculus(void)
 
 void Oculus::shutDownOculus()
 {
+
+  ovr_Shutdown();
+
   /*
   delete m_stereoConfig;
   m_stereoConfig = 0;
@@ -140,7 +143,22 @@ bool Oculus::setupOculus()
     Ogre::LogManager::getSingleton().logMessage("Oculus: Already Initialised");
     return true;
   }
+
+  // initialzes the OVR
+  ovr_Initialize();
+
+  // attempts to detect the HMD and dies if it doesn't.
+  int numDevices = ovrHmd_Detect();
+
+  if (numDevices < 0){
+      Ogre::LogManager::getSingleton().logMessage("Oculus: Hmd not detected. ERMAHGERD!");
+      return false;        
+  }
   
+  Ogre::LogManager::getSingleton().logMessage("Oculus: Oculus setup completed successfully");
+
+// TODO: figure out if additional calibration is needed.
+
   /*
   Ogre::LogManager::getSingleton().logMessage("Oculus: Initialising system");
   System::Init(Log::ConfigureDefaultLog(LogMask_All));
@@ -319,6 +337,7 @@ void Oculus::update()
 bool Oculus::isMagCalibrated()
 {
 
+  //TODO: Figure out how to calibrate mag stuff if necessary.
   return true;
 
   /*
