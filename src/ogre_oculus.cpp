@@ -147,7 +147,6 @@ bool Oculus::setupOculus()
 
   if (!ovr_Initialize(0)){
       Ogre::LogManager::getSingleton().logMessage("Initialization of OVR failed.");
-      return false;    
   }
 
   // attempts to detect the HMD and dies if it doesn't.
@@ -177,22 +176,22 @@ bool Oculus::setupOculus()
 
   *hmd = ovrHmd_Create(0);
 
-  if (!*hmd){   
-    Ogre::LogManager::getSingleton().logMessage("Could not set up virtual HMD");
+  if (!hmd){   
+    Ogre::LogManager::getSingleton().logMessage("Could not set up virtual HMD.");
     return false;    
   }
 
-//  if (!ovrHmd_ConfigureTracking(*hmd, ovrTrackingCap_Orientation|ovrTrackingCap_Position, 0)){
-//    Ogre::LogManager::getSingleton().logMessage("Cannot configure OVR Tracking.");
-//    return false;
-//  } 
+  if (!ovrHmd_ConfigureTracking(*hmd, ovrTrackingCap_Orientation|ovrTrackingCap_Position, 0)){
+    Ogre::LogManager::getSingleton().logMessage("Cannot configure OVR Tracking.");
+    return false;
+  } 
 
   // Set up whatever data structures are necessary.
 
   // Prints the version number
   Ogre::LogManager::getSingleton().logMessage(ovr_GetVersionString());
   // Prints success
-  Ogre::LogManager::getSingleton().logMessage("Oculus: Oculus setup completed successfully");
+  Ogre::LogManager::getSingleton().logMessage("Oculus: Oculus setup completed successfully.");
 
   // TODO: figure out if additional calibration is needed.
 
@@ -266,6 +265,7 @@ bool Oculus::setupOgre(Ogre::SceneManager *sm, Ogre::RenderWindow *win, Ogre::Sc
   Ogre::GpuProgramParametersSharedPtr pParamsRight =
       matRight->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
   Ogre::Vector4 hmdwarp;
+
   /*
   if (m_stereoConfig)
   {
