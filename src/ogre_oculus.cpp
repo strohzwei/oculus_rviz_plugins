@@ -12,7 +12,6 @@
 /// DEALINGS IN THE SOFTWARE.
 
 #include "oculus_rviz_plugins/ogre_oculus.h"
-#include "OVR_CAPI_0_5_0.h"
 #include "OGRE/OgreSceneManager.h"
 #include "OGRE/OgreRenderWindow.h"
 #include "OGRE/OgreCompositorManager.h"
@@ -62,8 +61,10 @@ Oculus::~Oculus(void)
 void Oculus::shutDownOculus()
 {
 
-  ovr_Shutdown();
-
+  if (hmd){
+    ovrHmd_Destroy(*hmd);
+    ovr_Shutdown();
+  }
   /*
   delete m_stereoConfig;
   m_stereoConfig = 0;
@@ -144,8 +145,10 @@ bool Oculus::setupOculus()
     return true;
   }
 
-  // initialzes the OVR
-  ovr_Initialize();
+  if (!ovr_Initialize(0)){
+      Ogre::LogManager::getSingleton().logMessage("Initialization of OVR failed.");
+      return false;    
+  }
 
   // attempts to detect the HMD and dies if it doesn't.
   int numDevices = ovrHmd_Detect();
@@ -168,7 +171,21 @@ bool Oculus::setupOculus()
           return false;
 
       }
+    }  
+
+  // initialzes the OVR
+
+  *hmd = ovrHmd_Create(0);
+
+  if (!*hmd){   
+    Ogre::LogManager::getSingleton().logMessage("Could not set up virtual HMD");
+    return false;    
   }
+
+//  if (!ovrHmd_ConfigureTracking(*hmd, ovrTrackingCap_Orientation|ovrTrackingCap_Position, 0)){
+//    Ogre::LogManager::getSingleton().logMessage("Cannot configure OVR Tracking.");
+//    return false;
+//  } 
 
   // Set up whatever data structures are necessary.
 

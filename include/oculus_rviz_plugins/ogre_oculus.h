@@ -15,6 +15,7 @@
 
 #include "OGRE/OgreQuaternion.h"
 #include "OGRE/OgreVector3.h"
+#include "OVR_CAPI_0_5_0.h"
 
 #include <string>
 
@@ -108,6 +109,7 @@ public:
   bool isMagCalibrated();
 
 protected:
+
 /*  OVR::DeviceManager *m_deviceManager;
   OVR::HMDDevice *m_hmd;
   OVR::Util::Render::StereoConfig *m_stereoConfig;
@@ -115,6 +117,8 @@ protected:
   OVR::SensorDevice *m_sensor;
   OVR::SensorFusion *m_sensorFusion;
   */
+
+  ovrHmd *hmd;
   bool m_oculusReady; /// Has the oculus rift been fully initialised?
   bool m_ogreReady; /// Has ogre been fully initialised?
   Ogre::SceneManager *m_sceneManager;
