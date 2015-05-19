@@ -18,8 +18,8 @@ find_package(catkin REQUIRED COMPONENTS
 #link_directories(${OculusSDK_LIBRARY_DIRS})
 
 # Link Dynamic Library for OculusSDK here
-set(${OculusSDK_LIBRARIES} /usr/local/lib/libOVRRT64_0.so.5.0.1)
-set(${OculusSDK_INCLUDE_DIRS} /usr/include)
+set(OculusSDK_LIBRARIES /usr/local/lib/libOVRRT64_0.so.5.0.1)
+set(OculusSDK_INCLUDE_DIRS /usr/include)
 
 # Boost
 find_package(Boost REQUIRED)
