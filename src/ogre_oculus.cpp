@@ -150,14 +150,34 @@ bool Oculus::setupOculus()
   // attempts to detect the HMD and dies if it doesn't.
   int numDevices = ovrHmd_Detect();
 
-  if (numDevices < 0){
-      Ogre::LogManager::getSingleton().logMessage("Oculus: Hmd not detected. ERMAHGERD!");
-      return false;        
+  if (numDevices < 1){
+      Ogre::LogManager::getSingleton().logMessage("Oculus: Hmd not detected.");
+      switch(numDevices){
+        case 0:
+           Ogre::LogManager::getSingleton().logMessage("Check if the Oculus is plugged in / turned on.");
+          return false;
+
+        case -1:
+          Ogre::LogManager::getSingleton().logMessage("Please run ovrd in a seperate terminal.");
+          return false;
+
+        default:
+          char msgstr[10];
+          sprintf(msgstr, "Unknown Error Code: %d",numDevices);
+          Ogre::LogManager::getSingleton().logMessage(msgstr);
+          return false;
+
+      }
   }
-  
+
+  // Set up whatever data structures are necessary.
+
+  // Prints the version number
+  Ogre::LogManager::getSingleton().logMessage(ovr_GetVersionString());
+  // Prints success
   Ogre::LogManager::getSingleton().logMessage("Oculus: Oculus setup completed successfully");
 
-// TODO: figure out if additional calibration is needed.
+  // TODO: figure out if additional calibration is needed.
 
   /*
   Ogre::LogManager::getSingleton().logMessage("Oculus: Initialising system");
@@ -298,6 +318,8 @@ bool Oculus::setupOgre(Ogre::SceneManager *sm, Ogre::RenderWindow *win, Ogre::Sc
 
 void Oculus::updateProjectionMatrices()
 {
+
+
   /*
   if (m_stereoConfig)
   {
@@ -364,6 +386,8 @@ Ogre::Quaternion Oculus::getOrientation() const
   {
 //    Quatf q = m_sensorFusion->GetPredictedOrientation();
 //    return Ogre::Quaternion(q.w, q.x, q.y, q.z);
+
+
 return Ogre::Quaternion(0,0,0,0);
   }
   else
