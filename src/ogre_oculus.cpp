@@ -37,8 +37,13 @@ namespace oculus_rviz_plugins
 {
 
 Oculus::Oculus(void) :
-    m_sensorFusion(0), m_stereoConfig(0), m_hmd(0), m_deviceManager(0), m_oculusReady(false), m_ogreReady(false), m_sensor(
-        0), m_centreOffset(g_defaultProjectionCentreOffset), m_window(0), m_sceneManager(0), m_cameraNode(0)
+/*
+    m_sensorFusion(0), 
+    m_stereoConfig(0), 
+    m_hmd(0), 
+    m_deviceManager(0), */
+    m_oculusReady(false), m_ogreReady(false), //m_sensor(0), 
+    m_centreOffset(g_defaultProjectionCentreOffset), m_window(0), m_sceneManager(0), m_cameraNode(0)
 {
   for (int i = 0; i < 2; ++i)
   {
@@ -56,6 +61,7 @@ Oculus::~Oculus(void)
 
 void Oculus::shutDownOculus()
 {
+  /*
   delete m_stereoConfig;
   m_stereoConfig = 0;
   delete m_sensorFusion;
@@ -75,14 +81,14 @@ void Oculus::shutDownOculus()
     m_deviceManager->Release();
     m_deviceManager = 0;
   }
-
+*/
   if ( m_oculusReady)
   {
 
   }
 
   m_oculusReady = false;
-  System::Destroy();
+//  System::Destroy();
 }
 
 void Oculus::shutDownOgre()
@@ -134,6 +140,8 @@ bool Oculus::setupOculus()
     Ogre::LogManager::getSingleton().logMessage("Oculus: Already Initialised");
     return true;
   }
+  
+  /*
   Ogre::LogManager::getSingleton().logMessage("Oculus: Initialising system");
   System::Init(Log::ConfigureDefaultLog(LogMask_All));
   m_deviceManager = DeviceManager::Create();
@@ -177,7 +185,7 @@ bool Oculus::setupOculus()
   m_magCalibration = new Util::MagCalibration();
   m_magCalibration->BeginAutoCalibration( *m_sensorFusion );
   Ogre::LogManager::getSingleton().logMessage("Oculus: Created MagCalibration");
-
+*/
   m_oculusReady = true;
   Ogre::LogManager::getSingleton().logMessage("Oculus: Oculus setup completed successfully");
   return true;
@@ -203,6 +211,7 @@ bool Oculus::setupOgre(Ogre::SceneManager *sm, Ogre::RenderWindow *win, Ogre::Sc
   Ogre::GpuProgramParametersSharedPtr pParamsRight =
       matRight->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
   Ogre::Vector4 hmdwarp;
+  /*
   if (m_stereoConfig)
   {
     hmdwarp = Ogre::Vector4(m_stereoConfig->GetDistortionK(0), m_stereoConfig->GetDistortionK(1),
@@ -234,9 +243,11 @@ bool Oculus::setupOgre(Ogre::SceneManager *sm, Ogre::RenderWindow *win, Ogre::Sc
   Ogre::CompositorPtr comp = Ogre::CompositorManager::getSingleton().getByName("OculusRight");
   comp->getTechnique(0)->getOutputTargetPass()->getPass(0)->setMaterialName("Ogre/Compositor/Oculus/Right");
 
+  */
   for (int i = 0; i < 2; ++i)
   {
     m_cameraNode->attachObject(m_cameras[i]);
+    /*
     if (m_stereoConfig)
     {
       // Setup cameras.
@@ -252,6 +263,7 @@ bool Oculus::setupOgre(Ogre::SceneManager *sm, Ogre::RenderWindow *win, Ogre::Sc
       m_cameras[i]->setFarClipDistance(g_defaultFarClip);
       m_cameras[i]->setPosition((i * 2 - 1) * g_defaultIPD * 0.5f, 0, 0);
     }
+  */    
     m_viewports[i] = win->addViewport(m_cameras[i], i, 0.5f * i, 0, 0.5f, 1.0f);
     m_viewports[i]->setBackgroundColour(g_defaultViewportColour);
     m_compositors[i] = Ogre::CompositorManager::getSingleton().addCompositor(m_viewports[i],
@@ -268,6 +280,7 @@ bool Oculus::setupOgre(Ogre::SceneManager *sm, Ogre::RenderWindow *win, Ogre::Sc
 
 void Oculus::updateProjectionMatrices()
 {
+  /*
   if (m_stereoConfig)
   {
     for (int i = 0; i < 2; ++i)
@@ -279,6 +292,7 @@ void Oculus::updateProjectionMatrices()
       m_cameras[i]->setCustomProjectionMatrix(true, proj * m_cameras[i]->getProjectionMatrix());
     }
   }
+  */
 }
 
 void Oculus::update()
@@ -286,7 +300,7 @@ void Oculus::update()
   if (m_ogreReady)
   {
     m_cameraNode->setOrientation(getOrientation());
-
+/*
     if (m_magCalibration->IsAutoCalibrating())
     {
       m_magCalibration->UpdateAutoCalibration( *m_sensorFusion );
@@ -294,13 +308,22 @@ void Oculus::update()
       {
         m_sensorFusion->SetYawCorrectionEnabled(true);
       }
+      
     }
+    */
+    
   }
+  
 }
 
 bool Oculus::isMagCalibrated()
 {
+
+  return true;
+
+  /*
   return m_oculusReady && m_magCalibration->IsCalibrated();
+  */
 }
 
 Ogre::SceneNode* Oculus::getCameraNode()
@@ -312,7 +335,7 @@ void Oculus::setPredictionDt(float dt)
 {
   if (m_oculusReady)
   {
-    m_sensorFusion->SetPrediction( dt, dt > 0.0f );
+//    m_sensorFusion->SetPrediction( dt, dt > 0.0f );
   }
 }
 
@@ -320,8 +343,9 @@ Ogre::Quaternion Oculus::getOrientation() const
 {
   if (m_oculusReady)
   {
-    Quatf q = m_sensorFusion->GetPredictedOrientation();
-    return Ogre::Quaternion(q.w, q.x, q.y, q.z);
+//    Quatf q = m_sensorFusion->GetPredictedOrientation();
+//    return Ogre::Quaternion(q.w, q.x, q.y, q.z);
+return Ogre::Quaternion(0,0,0,0);
   }
   else
   {
@@ -341,8 +365,8 @@ float Oculus::getCentreOffset() const
 
 void Oculus::resetOrientation()
 {
-  if (m_sensorFusion)
-    m_sensorFusion->Reset();
+//  if (m_sensorFusion)
+//    m_sensorFusion->Reset();
 }
 
 }

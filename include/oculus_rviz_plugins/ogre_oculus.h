@@ -90,11 +90,14 @@ public:
   /// Retrieve the projection centre offset.
   float getCentreOffset() const;
 
+/*
+
   const OVR::HMDDevice *getHMDDevice()
   {
     return m_hmd;
   }
-
+*/
+  
   /// Re-create projection matrices based on camera parameters
   void updateProjectionMatrices();
 
@@ -105,12 +108,13 @@ public:
   bool isMagCalibrated();
 
 protected:
-  OVR::DeviceManager *m_deviceManager;
+/*  OVR::DeviceManager *m_deviceManager;
   OVR::HMDDevice *m_hmd;
   OVR::Util::Render::StereoConfig *m_stereoConfig;
   OVR::Util::MagCalibration *m_magCalibration;
   OVR::SensorDevice *m_sensor;
   OVR::SensorFusion *m_sensorFusion;
+  */
   bool m_oculusReady; /// Has the oculus rift been fully initialised?
   bool m_ogreReady; /// Has ogre been fully initialised?
   Ogre::SceneManager *m_sceneManager;

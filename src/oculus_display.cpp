@@ -189,6 +189,7 @@ void OculusDisplay::onFullScreenChanged()
   {
     int x_res = 1280;
     int y_res = 800;
+    /*
     if ( oculus_->getHMDDevice() )
     {
       OVR::HMDInfo info;
@@ -200,6 +201,7 @@ void OculusDisplay::onFullScreenChanged()
     QRect screen_res = QApplication::desktop()->screenGeometry( primary_screen );
     render_widget_->setGeometry( screen_res.x(), screen_res.y(), x_res, y_res );
     render_widget_->showNormal();
+  */
   }
 }
 
