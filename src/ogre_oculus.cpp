@@ -12,7 +12,7 @@
 /// DEALINGS IN THE SOFTWARE.
 
 #include "oculus_rviz_plugins/ogre_oculus.h"
-#include "OVR.h"
+#include "OVR_CAPI_0_5_0.h"
 #include "OGRE/OgreSceneManager.h"
 #include "OGRE/OgreRenderWindow.h"
 #include "OGRE/OgreCompositorManager.h"
