@@ -144,14 +144,21 @@ bool Oculus::setupOculus()
     Ogre::LogManager::getSingleton().logMessage("Oculus: Already Initialised");
     return true;
   }
+  ovrInitParams params = {0, 0, NULL, 0};
+  bool success = ovr_Initialize(&params);
+  // initialzes the OVR
 
-  if (!ovr_Initialize(0)){
+  m_hmd = ovrHmd_Create(0);
+
+  if (!success){
       Ogre::LogManager::getSingleton().logMessage("Oculus: Initialization of OVR failed.");
       // no return here; the next step finds out why
   }
 
   // attempts to detect the HMD and dies if it doesn't.
   int numDevices = ovrHmd_Detect();
+
+  // special steps for Dk1?
 
   if (numDevices < 1){
       Ogre::LogManager::getSingleton().logMessage("Oculus: Hmd not detected.");
@@ -173,9 +180,7 @@ bool Oculus::setupOculus()
       }
     }  
 
-  // initialzes the OVR
 
-  m_hmd = ovrHmd_Create(0);
 
   if (!m_hmd){   
     Ogre::LogManager::getSingleton().logMessage("Oculus:Could not set up virtual HMD.");
@@ -186,7 +191,7 @@ bool Oculus::setupOculus()
 
   // sets up tracking
 
-  if (!ovrHmd_ConfigureTracking(m_hmd, ovrTrackingCap_Orientation | ovrTrackingCap_MagYawCorrection, 0)){
+  if (!ovrHmd_ConfigureTracking(m_hmd, ovrTrackingCap_Orientation, 0)){
     Ogre::LogManager::getSingleton().logMessage("Oculus: Cannot configure OVR Tracking.");
     return false;
   } 
@@ -199,6 +204,9 @@ bool Oculus::setupOculus()
     Ogre::LogManager::getSingleton().logMessage("Oculus: Cannot configure OVR rendering.");
     return false;
   }  
+
+  unsigned int hmdCaps = ovrHmdCap_DynamicPrediction;
+  ovrHmd_SetEnabledCaps(m_hmd, hmdCaps);
 
   // Set up whatever data structures are necessary.
 
@@ -445,6 +453,9 @@ Ogre::Quaternion Oculus::getOrientation() const
    // get orientation
    
    ovrTrackingState state = ovrHmd_GetTrackingState(m_hmd, 0.0);
+   if (!&state){
+      Ogre::LogManager::getSingleton().logMessage("Oculus: Sensor not found.");
+   }
   ovrQuatf q = state.HeadPose.ThePose.Orientation;// get pose
 
 //    Quatf q = m_sensorFusion->GetPredictedOrientation();
