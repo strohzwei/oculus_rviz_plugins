@@ -61,8 +61,8 @@ Oculus::~Oculus(void)
 void Oculus::shutDownOculus()
 {
 
-  if (hmd){
-    ovrHmd_Destroy(*hmd);
+  if (m_hmd){
+    ovrHmd_Destroy(m_hmd);
     ovr_Shutdown();
   }
   /*
@@ -175,9 +175,9 @@ bool Oculus::setupOculus()
 
   // initialzes the OVR
 
-  *hmd = ovrHmd_Create(0);
+  m_hmd = ovrHmd_Create(0);
 
-  if (!hmd){   
+  if (!m_hmd){   
     Ogre::LogManager::getSingleton().logMessage("Oculus:Could not set up virtual HMD.");
     return false;    
   }
@@ -185,14 +185,14 @@ bool Oculus::setupOculus()
 
   // sets up tracking
 
-  if (!ovrHmd_ConfigureTracking(*hmd, ovrTrackingCap_Orientation|ovrTrackingCap_Position, 0)){
+  if (!ovrHmd_ConfigureTracking(m_hmd, ovrTrackingCap_Orientation|ovrTrackingCap_Position, 0)){
     Ogre::LogManager::getSingleton().logMessage("Oculus: Cannot configure OVR Tracking.");
     return false;
   } 
 
   // sets up rendering information
 
-  if (!ovrHmd_ConfigureRendering(*hmd, 0, 0, m_eyeFovIn, 0)){
+  if (!ovrHmd_ConfigureRendering(m_hmd, 0, 0, m_eyeFovIn, 0)){
     Ogre::LogManager::getSingleton().logMessage("Oculus: Cannot configure OVR rendering.");
     return false;
   }  

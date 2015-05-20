@@ -119,7 +119,7 @@ protected:
   */
 
   // new API structures
-  ovrHmd *hmd;
+  ovrHmd m_hmd;
   ovrFovPort m_eyeFovIn[2];
 
   bool m_oculusReady; /// Has the oculus rift been fully initialised?
