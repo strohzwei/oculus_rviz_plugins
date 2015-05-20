@@ -146,7 +146,8 @@ bool Oculus::setupOculus()
   }
 
   if (!ovr_Initialize(0)){
-      Ogre::LogManager::getSingleton().logMessage("Initialization of OVR failed.");
+      Ogre::LogManager::getSingleton().logMessage("Oculus: Initialization of OVR failed.");
+      // no return here; the next step finds out why
   }
 
   // attempts to detect the HMD and dies if it doesn't.
@@ -160,7 +161,7 @@ bool Oculus::setupOculus()
           return false;
 
         case -1:
-          Ogre::LogManager::getSingleton().logMessage("Please run ovrd in a seperate terminal.");
+          Ogre::LogManager::getSingleton().logMessage("Oculus: Please run ovrd in a seperate terminal.");
           return false;
 
         default:
@@ -177,14 +178,24 @@ bool Oculus::setupOculus()
   *hmd = ovrHmd_Create(0);
 
   if (!hmd){   
-    Ogre::LogManager::getSingleton().logMessage("Could not set up virtual HMD.");
+    Ogre::LogManager::getSingleton().logMessage("Oculus:Could not set up virtual HMD.");
     return false;    
   }
 
+
+  // sets up tracking
+
   if (!ovrHmd_ConfigureTracking(*hmd, ovrTrackingCap_Orientation|ovrTrackingCap_Position, 0)){
-    Ogre::LogManager::getSingleton().logMessage("Cannot configure OVR Tracking.");
+    Ogre::LogManager::getSingleton().logMessage("Oculus: Cannot configure OVR Tracking.");
     return false;
   } 
+
+  // sets up rendering information
+
+  if (!ovrHmd_ConfigureRendering(*hmd, 0, 0, m_eyeFovIn, 0)){
+    Ogre::LogManager::getSingleton().logMessage("Oculus: Cannot configure OVR rendering.");
+    return false;
+  }  
 
   // Set up whatever data structures are necessary.
 

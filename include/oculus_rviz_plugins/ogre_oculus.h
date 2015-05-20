@@ -118,7 +118,10 @@ protected:
   OVR::SensorFusion *m_sensorFusion;
   */
 
+  // new API structures
   ovrHmd *hmd;
+  ovrFovPort m_eyeFovIn[2];
+
   bool m_oculusReady; /// Has the oculus rift been fully initialised?
   bool m_ogreReady; /// Has ogre been fully initialised?
   Ogre::SceneManager *m_sceneManager;
