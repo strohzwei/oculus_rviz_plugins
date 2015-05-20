@@ -9,6 +9,12 @@ and [OsgOculusViewer](https://github.com/bjornblissing/osgoculusviewer) (GLSL sh
 Usage Instructions
 ==================
 
+New Instructions:
+
+Install the Oculus Rift [Oculus Rift SDK 0.5.0.1](SDK https://developer.oculus.com/downloads/#status=archive). Follow the setup instructions.
+
+Before running the plugins, run ovrd in a seperate terminal.
+
 In RViz, add the "OculusDisplay". This will create an additional window with a stereo rendering
 of the contents of the main RViz rendering area. Check "Render to Oculus" to 
 render in full screen mode on your Oculus headset. It must be set up as secondary screen
