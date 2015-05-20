@@ -191,7 +191,10 @@ bool Oculus::setupOculus()
 
   // sets up tracking
 
-  if (!ovrHmd_ConfigureTracking(m_hmd, ovrTrackingCap_Orientation, 0)){
+  if (!ovrHmd_ConfigureTracking(m_hmd,
+                                ovrTrackingCap_Orientation | ovrTrackingCap_MagYawCorrection | ovrTrackingCap_Position,
+                                0))
+  {
     Ogre::LogManager::getSingleton().logMessage("Oculus: Cannot configure OVR Tracking.");
     return false;
   } 
