@@ -182,17 +182,20 @@ bool Oculus::setupOculus()
     return false;    
   }
 
+  ovrHmd_RecenterPose(m_hmd);
 
   // sets up tracking
 
-  if (!ovrHmd_ConfigureTracking(m_hmd, ovrTrackingCap_Orientation|ovrTrackingCap_Position, 0)){
+  if (!ovrHmd_ConfigureTracking(m_hmd, ovrTrackingCap_Orientation | ovrTrackingCap_MagYawCorrection, 0)){
     Ogre::LogManager::getSingleton().logMessage("Oculus: Cannot configure OVR Tracking.");
     return false;
   } 
 
+
+
   // sets up rendering information
 
-  if (!ovrHmd_ConfigureRendering(m_hmd, 0, 0, m_eyeFovIn, 0)){
+  if (!ovrHmd_ConfigureRendering(m_hmd, 0, 0, 0, m_eyeRenderDescOut)){
     Ogre::LogManager::getSingleton().logMessage("Oculus: Cannot configure OVR rendering.");
     return false;
   }  
@@ -313,6 +316,17 @@ bool Oculus::setupOgre(Ogre::SceneManager *sm, Ogre::RenderWindow *win, Ogre::Sc
   for (int i = 0; i < 2; ++i)
   {
     m_cameraNode->attachObject(m_cameras[i]);
+
+    // sets camera options
+      m_cameras[i]->setNearClipDistance(g_defaultNearClip);
+      m_cameras[i]->setFarClipDistance(g_defaultFarClip*1000);
+
+//      m_cameras[i]->setFarClipDistance(m_hmd->CameraFrustumFarZInMeters);
+
+//      m_cameras[i]->setNearClipDistance(m_hmd->CameraFrustumNearZInMeters);
+//      m_cameras[i]->setFarClipDistance(m_hmd->CameraFrustumFarZInMeters);
+      m_cameras[i]->setPosition((i * 2 - 1) * OVR_DEFAULT_IPD * 0.5f, 0, 0);
+      m_cameras[i]->setFOVy(Ogre::Radian(m_hmd->CameraFrustumVFovInRadians));
     /*
     if (m_stereoConfig)
     {
@@ -348,19 +362,35 @@ void Oculus::updateProjectionMatrices()
 {
 
 
-  /*
-  if (m_stereoConfig)
-  {
+
+//  if (m_stereoConfig)
+//  {
+
     for (int i = 0; i < 2; ++i)
     {
       m_cameras[i]->setCustomProjectionMatrix(false);
       Ogre::Matrix4 proj = Ogre::Matrix4::IDENTITY;
-      float temp = m_stereoConfig->GetProjectionCenterOffset();
-      proj.setTrans(Ogre::Vector3(-m_stereoConfig->GetProjectionCenterOffset() * (2 * i - 1), 0, 0));
+
+      ovrEyeType eye;
+
+      switch(i){
+        case 0:
+          eye = ovrEye_Left;
+          break;
+        case 1:
+          eye = ovrEye_Right;
+          break;
+      }
+
+      ovrPosef temp = ovrHmd_GetHmdPosePerEye(m_hmd, eye);
+
+      //float temp = m_stereoConfig->GetProjectionCenterOffset();
+//      proj.setTrans(Ogre::Vector3(-m_stereoConfig->GetProjectionCenterOffset() * (2 * i - 1), 0, 0));
+      proj.setTrans(Ogre::Vector3(temp.Orientation.x, temp.Orientation.y, temp.Orientation.z));
       m_cameras[i]->setCustomProjectionMatrix(true, proj * m_cameras[i]->getProjectionMatrix());
     }
-  }
-  */
+  //
+  
 }
 
 void Oculus::update()
@@ -412,11 +442,14 @@ Ogre::Quaternion Oculus::getOrientation() const
 {
   if (m_oculusReady)
   {
+   // get orientation
+   
+   ovrTrackingState state = ovrHmd_GetTrackingState(m_hmd, 0.0);
+  ovrQuatf q = state.HeadPose.ThePose.Orientation;// get pose
+
 //    Quatf q = m_sensorFusion->GetPredictedOrientation();
 //    return Ogre::Quaternion(q.w, q.x, q.y, q.z);
-
-
-return Ogre::Quaternion(0,0,0,0);
+  return Ogre::Quaternion(q.w, q.x, q.y, q.z);
   }
   else
   {

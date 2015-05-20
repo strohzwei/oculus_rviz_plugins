@@ -16,6 +16,7 @@
 #include "OGRE/OgreQuaternion.h"
 #include "OGRE/OgreVector3.h"
 #include "OVR_CAPI_0_5_0.h"
+#include "OVR_CAPI_Keys.h"
 
 #include <string>
 
@@ -119,8 +120,15 @@ protected:
   */
 
   // new API structures
+
+  // Oculus Rift
   ovrHmd m_hmd;
-  ovrFovPort m_eyeFovIn[2];
+
+  //
+
+  ovrEyeType m_eyeType;
+  ovrEyeRenderDesc m_eyeRenderDescOut[2];
+
 
   bool m_oculusReady; /// Has the oculus rift been fully initialised?
   bool m_ogreReady; /// Has ogre been fully initialised?
