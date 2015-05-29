@@ -11,9 +11,9 @@ Usage Instructions
 
 New Instructions:
 
-Install the Oculus Rift [Oculus Rift SDK 0.5.0.1](SDK https://developer.oculus.com/downloads/#status=archive). Follow the setup instructions.
+Download the catkin_package [https://github.com/rebhuhnd/ros_ovr_sdk](ros_ovr_sdk) into your workspace and run catkin_make twice.
 
-Before running the plugins, run ovrd in a seperate terminal.
+Before using the OculusDisplay, run rosrun OculusSDK/build/bin/ovrd in a sourced terminal.
 
 In RViz, add the "OculusDisplay". This will create an additional window with a stereo rendering
 of the contents of the main RViz rendering area. Check "Render to Oculus" to 
