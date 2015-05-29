@@ -14,12 +14,20 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 # Oculus SDK
-#FIND_PACKAGE( OculusSDK REQUIRED )
-#link_directories(${OculusSDK_LIBRARY_DIRS})
+FIND_PACKAGE( OculusSDK REQUIRED )
+
+
+link_directories(OculusSDK_LIBRARIES)
+
+# Run OVR off of a shared library
 
 # Link Dynamic Library for OculusSDK here
-set(OculusSDK_LIBRARIES /usr/local/lib/libOVRRT64_0.so.5.0.1)
-set(OculusSDK_INCLUDE_DIRS /usr/include)
+#set(OculusSDK_LIBRARIES /usr/local/lib/libOVRRT64_0.so.5.0.1)
+#set(OculusSDK_INCLUDE_DIRS /usr/include)
+
+if(NOT OculusSDK_FOUND)
+    message("OculusSDK Library cannot be found.")
+endif(NOT OculusSDK_FOUND)
 
 # Boost
 find_package(Boost REQUIRED)
@@ -28,7 +36,7 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES oculus_rviz_plugins
   CATKIN_DEPENDS rviz
-#  DEPENDS OculusSDK
+  DEPENDS OculusSDK
 )
 
 find_package(PkgConfig)
