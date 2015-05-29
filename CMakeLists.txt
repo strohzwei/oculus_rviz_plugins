@@ -14,16 +14,16 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 # Oculus SDK
-FIND_PACKAGE( catkin REQUIRED COMPONENTS OculusSDK )
+FIND_PACKAGE( catkin REQUIRED COMPONENTS ros_ovr_sdk )
 
 
-#link_directories(OculusSDK_LIBRARIES)
+#link_directories(ros_ovr_sdk_LIBRARIES)
 
 # Run OVR off of a shared library
 
-if(NOT OculusSDK_FOUND)
-    message("OculusSDK Library cannot be found.")
-endif(NOT OculusSDK_FOUND)
+if(NOT ros_ovr_sdk_FOUND)
+    message("ros_ovr_sdk Library cannot be found.")
+endif(NOT ros_ovr_sdk_FOUND)
 
 # Boost
 find_package(Boost REQUIRED)
@@ -32,7 +32,7 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES oculus_rviz_plugins
   CATKIN_DEPENDS rviz
-  DEPENDS OculusSDK
+  DEPENDS ros_ovr_sdk
 )
 
 find_package(PkgConfig)
@@ -40,7 +40,7 @@ pkg_check_modules(OGRE OGRE)
 
 include_directories(include
   ${catkin_INCLUDE_DIRS}
-  ${OculusSDK_INCLUDE_DIRS}
+  ${ros_ovr_sdk_INCLUDE_DIRS}
   ${OGRE_INCLUDE_DIRS}
   ${BOOST_INCLUDE_DIRS}
 )
@@ -61,7 +61,7 @@ add_library(oculus_rviz_plugins
 target_link_libraries(oculus_rviz_plugins
   ${catkin_LIBRARIES}
   ${QT_LIBRARIES}
-  ${OculusSDK_LIBRARIES}
+  ${ros_ovr_sdk_LIBRARIES}
   ${BOOST_LIBRARIES}
 )
 

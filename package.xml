@@ -11,8 +11,8 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>OculusSDK</build_depend>
-  <run_depend>OculusSDK</run_depend>
+  <build_depend>ros_ovr_sdk</build_depend>
+  <run_depend>ros_ovr_sdk</run_depend>
 
   <build_depend>libogre-dev</build_depend>
   <run_depend>libogre-dev</run_depend>
