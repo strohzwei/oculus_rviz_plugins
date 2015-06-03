@@ -203,6 +203,8 @@ bool Oculus::setupOculus()
 
   // sets up rendering information
 
+
+
   if (!ovrHmd_ConfigureRendering(m_hmd, 0, 0, 0, m_eyeRenderDescOut)){
     Ogre::LogManager::getSingleton().logMessage("Oculus: Cannot configure OVR rendering.");
     return false;
@@ -377,11 +379,14 @@ void Oculus::updateProjectionMatrices()
 //  if (m_stereoConfig)
 //  {
 
+    ovrHmd_BeginFrameTiming(m_hmd, 0);
+
+
     for (int i = 0; i < 2; ++i)
     {
-      m_cameras[i]->setCustomProjectionMatrix(false);
-      Ogre::Matrix4 proj = Ogre::Matrix4::IDENTITY;
 
+      Ogre::Matrix4 proj = Ogre::Matrix4::IDENTITY;
+      m_cameras[i]->setCustomProjectionMatrix(false);
       ovrEyeType eye;
 
       switch(i){
@@ -392,14 +397,21 @@ void Oculus::updateProjectionMatrices()
           eye = ovrEye_Right;
           break;
       }
-
-      ovrPosef temp = ovrHmd_GetHmdPosePerEye(m_hmd, eye);
+      ovrEyeRenderDesc temp = ovrHmd_GetRenderDesc(m_hmd,eye,m_hmd->DefaultEyeFov[i]);
+//      ovrPosef temp = ovrHmd_GetHmdPosePerEye(m_hmd, eye);
 
       //float temp = m_stereoConfig->GetProjectionCenterOffset();
 //      proj.setTrans(Ogre::Vector3(-m_stereoConfig->GetProjectionCenterOffset() * (2 * i - 1), 0, 0));
-      proj.setTrans(Ogre::Vector3(temp.Orientation.x, temp.Orientation.y, temp.Orientation.z));
+//      proj.setTrans(Ogre::Vector3(temp.Orientation.x, temp.Orientation.y, temp.Orientation.z));
+
+      proj.setTrans(Ogre::Vector3(temp.HmdToEyeViewOffset.x, temp.HmdToEyeViewOffset.y, temp.HmdToEyeViewOffset.z));
+
       m_cameras[i]->setCustomProjectionMatrix(true, proj * m_cameras[i]->getProjectionMatrix());
     }
+
+    ovrHmd_EndFrameTiming(m_hmd);
+
+
   //
   
 }
@@ -408,6 +420,11 @@ void Oculus::update()
 {
   if (m_ogreReady)
   {
+    Ogre::Quaternion orient = getOrientation();
+    char msgstring[1024];
+    sprintf(msgstring, "Orientation: %.2f %.2f %.2f %.2f", orient.x,orient.y,orient.z, orient.w);
+    Ogre::LogManager::getSingleton().logMessage(msgstring);
+
     m_cameraNode->setOrientation(getOrientation());
 /*
     if (m_magCalibration->IsAutoCalibrating())
@@ -458,17 +475,19 @@ Ogre::Quaternion Oculus::getOrientation() const
    ovrTrackingState state = ovrHmd_GetTrackingState(m_hmd, 0.0);
    if (!&state){
       Ogre::LogManager::getSingleton().logMessage("Oculus: Sensor not found.");
+   } else {
+    ovrQuatf q = state.HeadPose.ThePose.Orientation;// get pose
+    return Ogre::Quaternion(q.w, q.x, q.y, q.z);
    }
-  ovrQuatf q = state.HeadPose.ThePose.Orientation;// get pose
 
 //    Quatf q = m_sensorFusion->GetPredictedOrientation();
 //    return Ogre::Quaternion(q.w, q.x, q.y, q.z);
-  return Ogre::Quaternion(q.w, q.x, q.y, q.z);
   }
   else
   {
-    return Ogre::Quaternion::IDENTITY;
   }
+
+    return Ogre::Quaternion::IDENTITY;  
 }
 
 Ogre::CompositorInstance *Oculus::getCompositor(unsigned int i)
@@ -485,6 +504,9 @@ void Oculus::resetOrientation()
 {
 //  if (m_sensorFusion)
 //    m_sensorFusion->Reset();
-}
 
+  if (m_hmd){
+    ovrHmd_RecenterPose(m_hmd);
+  }
+}
 }
