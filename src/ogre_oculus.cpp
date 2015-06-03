@@ -304,6 +304,7 @@ bool Oculus::setupOgre(Ogre::SceneManager *sm, Ogre::RenderWindow *win, Ogre::Sc
     hmdwarp = Ogre::Vector4(g_defaultDistortion[0], g_defaultDistortion[1], g_defaultDistortion[2],
                             g_defaultDistortion[3]);
   }
+
   pParamsLeft->setNamedConstant("HmdWarpParam", hmdwarp);
   pParamsRight->setNamedConstant("HmdWarpParam", hmdwarp);
 
@@ -332,7 +333,7 @@ bool Oculus::setupOgre(Ogre::SceneManager *sm, Ogre::RenderWindow *win, Ogre::Sc
 
     // sets camera options
       m_cameras[i]->setNearClipDistance(g_defaultNearClip);
-      m_cameras[i]->setFarClipDistance(g_defaultFarClip*1000);
+      m_cameras[i]->setFarClipDistance(g_defaultFarClip);
 
 //      m_cameras[i]->setFarClipDistance(m_hmd->CameraFrustumFarZInMeters);
 
@@ -340,6 +341,8 @@ bool Oculus::setupOgre(Ogre::SceneManager *sm, Ogre::RenderWindow *win, Ogre::Sc
 //      m_cameras[i]->setFarClipDistance(m_hmd->CameraFrustumFarZInMeters);
       m_cameras[i]->setPosition((i * 2 - 1) * OVR_DEFAULT_IPD * 0.5f, 0, 0);
       m_cameras[i]->setFOVy(Ogre::Radian(m_hmd->CameraFrustumVFovInRadians));
+      // aspect ratio for DK2. Add in a more encapsulated way of setting this
+      m_cameras[i]->setAspectRatio(960.0/1080.0);      
     /*
     if (m_stereoConfig)
     {
@@ -406,6 +409,11 @@ void Oculus::updateProjectionMatrices()
 
       proj.setTrans(Ogre::Vector3(temp.HmdToEyeViewOffset.x, temp.HmdToEyeViewOffset.y, temp.HmdToEyeViewOffset.z));
 
+//    char msgstring[1024];      
+//    sprintf(msgstring, "Orientation: %.2f %.2f %.2f %.2f", temp.HmdToEyeViewOffset.x,temp.HmdToEyeViewOffset.y,temp.HmdToEyeViewOffset.z);
+
+//    Ogre::LogManager::getSingleton().logMessage(msgstring);
+
       m_cameras[i]->setCustomProjectionMatrix(true, proj * m_cameras[i]->getProjectionMatrix());
     }
 
@@ -422,8 +430,8 @@ void Oculus::update()
   {
     Ogre::Quaternion orient = getOrientation();
     char msgstring[1024];
-    sprintf(msgstring, "Orientation: %.2f %.2f %.2f %.2f", orient.x,orient.y,orient.z, orient.w);
-    Ogre::LogManager::getSingleton().logMessage(msgstring);
+//    sprintf(msgstring, "Orientation: %.2f %.2f %.2f %.2f", orient.x,orient.y,orient.z, orient.w);
+//    Ogre::LogManager::getSingleton().logMessage(msgstring);
 
     m_cameraNode->setOrientation(getOrientation());
 /*
