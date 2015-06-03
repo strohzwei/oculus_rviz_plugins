@@ -11,7 +11,7 @@ Usage Instructions
 
 New Instructions:
 
-Download the catkin_package [https://github.com/rebhuhnd/ros_ovr_sdk](ros_ovr_sdk) into your workspace and run catkin_make twice.
+Download the catkin_package [https://github.com/rebhuhnd/ros_ovr_sdk](ros_ovr_sdk) into your workspace and run catkin_make.
 
 Before using the OculusDisplay, run rosrun OculusSDK/build/bin/ovrd in a sourced terminal.
 
