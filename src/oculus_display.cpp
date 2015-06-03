@@ -34,7 +34,7 @@
 #include <QDesktopWidget>
 #include <QApplication>
 
-#include <OVR_CAPI_0_5_0.h>
+#include <OVR_CAPI.h>
 
 #include <boost/bind.hpp>
 
