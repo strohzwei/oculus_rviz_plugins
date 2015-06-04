@@ -1,15 +1,11 @@
 oculus_rviz_plugins
 ===========
 
-Contains the Oculus Display for RViz. To build it, you will need the [Oculus SDK for Linux 0.2.3](http://developer.oculusvr.com).
-
 This plugin is based on [OgreOculus](https://bitbucket.org/rajetic/ogreoculus) (C++)
 and [OsgOculusViewer](https://github.com/bjornblissing/osgoculusviewer) (GLSL shaders).
 
 Usage Instructions
 ==================
-
-New Instructions:
 
 Download the catkin_package [https://github.com/rebhuhnd/ros_ovr_sdk](ros_ovr_sdk) into your workspace and run catkin_make.
 
