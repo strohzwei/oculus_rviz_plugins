@@ -7,7 +7,7 @@ and [OsgOculusViewer](https://github.com/bjornblissing/osgoculusviewer) (GLSL sh
 Usage Instructions
 ==================
 
-Download the catkin_package [https://github.com/rebhuhnd/ros_ovr_sdk](ros_ovr_sdk) into your workspace and run catkin_make.
+Download the catkin_package [https://github.com/OSUrobotics/ros_ovr_sdk](ros_ovr_sdk) into your workspace and run catkin_make.
 
 Before using the OculusDisplay, run rosrun OculusSDK/build/bin/ovrd in a sourced terminal.
 
