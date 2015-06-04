@@ -14,10 +14,11 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 # Oculus SDK
-FIND_PACKAGE( catkin REQUIRED COMPONENTS ros_ovr_sdk )
+#FIND_PACKAGE( catkin REQUIRED COMPONENTS ros_ovr_sdk )
 
+FIND_PACKAGE( ros_ovr_sdk REQUIRED)
 
-#link_directories(ros_ovr_sdk_LIBRARIES)
+#link_directories(${ros_ovr_sdk_LIBRARIES})
 
 # Run OVR off of a shared library
 
