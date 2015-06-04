@@ -22,3 +22,5 @@ your head's orientation. Alternatively, you can attach the camera to a tf frame.
 This is how the Display should look like in windowed mode:
 
 ![ScreenShot](doc/screenshot.png)
+
+See [the Wiki](https://github.com/OSUrobotics/oculus_rviz_plugins/wiki) for more details.
