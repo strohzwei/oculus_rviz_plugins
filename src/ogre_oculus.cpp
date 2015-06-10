@@ -272,6 +272,19 @@ bool Oculus::setupOculus()
   return true;
 }
 
+// Currently, only the DK2 is supported. Each DK has it's own resolution
+// per eye. Further revisions will include a way to account for other dk versions
+float Oculus::getAspectRatio(){
+	switch (m_hmd->Type){
+		case ovrHmd_DK1:
+			return 640.0/800.0;		
+		case ovrHmd_DK2:
+			return 960.0/1080.0;
+		default: // release version
+			return 2160.0/1200.0;
+	}
+}
+
 bool Oculus::setupOgre(Ogre::SceneManager *sm, Ogre::RenderWindow *win, Ogre::SceneNode *parent)
 {
   m_window = win;
@@ -342,7 +355,9 @@ bool Oculus::setupOgre(Ogre::SceneManager *sm, Ogre::RenderWindow *win, Ogre::Sc
       m_cameras[i]->setPosition((i * 2 - 1) * OVR_DEFAULT_IPD * 0.5f, 0, 0);
       m_cameras[i]->setFOVy(Ogre::Radian(m_hmd->CameraFrustumVFovInRadians));
       // aspect ratio for DK2. Add in a more encapsulated way of setting this
-      m_cameras[i]->setAspectRatio(960.0/1080.0);      
+
+
+      m_cameras[i]->setAspectRatio(getAspectRatio());      
     /*
     if (m_stereoConfig)
     {
@@ -470,6 +485,7 @@ void Oculus::setPredictionDt(float dt)
 {
   if (m_oculusReady)
   {
+
 //    m_sensorFusion->SetPrediction( dt, dt > 0.0f );
   }
 }

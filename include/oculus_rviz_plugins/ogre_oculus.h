@@ -62,6 +62,8 @@ public:
   bool isOgreReady() const;
   bool isOculusReady() const;
 
+  float getAspectRatio();
+
   /// Update camera node using current Oculus orientation.
   void update();
 
