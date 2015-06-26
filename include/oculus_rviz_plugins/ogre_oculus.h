@@ -76,6 +76,9 @@ public:
   /// Retrieve the current orientation of the Oculus HMD.
   Ogre::Quaternion getOrientation() const;
 
+  /// Retrieve the current position of the Oculus HMD.
+  ovrPosef getPosition() const;
+
   /// Retrieve either of the two distortion compositors.
   Ogre::CompositorInstance *getCompositor(unsigned int i);
 

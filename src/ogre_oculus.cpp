@@ -18,7 +18,7 @@
 #include "OGRE/OgreCompositorInstance.h"
 #include "OGRE/OgreCompositionTargetPass.h"
 #include "OGRE/OgreCompositionPass.h"
-
+#include <ros/ros.h>
 using namespace OVR;
 
 namespace
@@ -353,7 +353,7 @@ bool Oculus::setupOgre(Ogre::SceneManager *sm, Ogre::RenderWindow *win, Ogre::Sc
 //      m_cameras[i]->setNearClipDistance(m_hmd->CameraFrustumNearZInMeters);
 //      m_cameras[i]->setFarClipDistance(m_hmd->CameraFrustumFarZInMeters);
       m_cameras[i]->setPosition((i * 2 - 1) * OVR_DEFAULT_IPD * 0.5f, 0, 0);
-      m_cameras[i]->setFOVy(Ogre::Radian(m_hmd->CameraFrustumVFovInRadians));
+      m_cameras[i]->setFOVy(Ogre::Radian(m_hmd->CameraFrustumVFovInRadians*2.));
       // aspect ratio for DK2. Add in a more encapsulated way of setting this
 
 
@@ -416,7 +416,7 @@ void Oculus::updateProjectionMatrices()
           break;
       }
       ovrEyeRenderDesc temp = ovrHmd_GetRenderDesc(m_hmd,eye,m_hmd->DefaultEyeFov[i]);
-//      ovrPosef temp = ovrHmd_GetHmdPosePerEye(m_hmd, eye);
+      //ovrPosef temp = ovrHmd_GetHmdPosePerEye(m_hmd, eye);
 
       //float temp = m_stereoConfig->GetProjectionCenterOffset();
 //      proj.setTrans(Ogre::Vector3(-m_stereoConfig->GetProjectionCenterOffset() * (2 * i - 1), 0, 0));
@@ -444,10 +444,14 @@ void Oculus::update()
   if (m_ogreReady)
   {
     Ogre::Quaternion orient = getOrientation();
-    char msgstring[1024];
+
+//    char msgstring[1024];
 //    sprintf(msgstring, "Orientation: %.2f %.2f %.2f %.2f", orient.x,orient.y,orient.z, orient.w);
 //    Ogre::LogManager::getSingleton().logMessage(msgstring);
 
+    ovrPosef currentPose = getPosition();
+
+    m_cameraNode->setPosition(currentPose.Position.x, currentPose.Position.y, currentPose.Position.z); //
     m_cameraNode->setOrientation(getOrientation());
 /*
     if (m_magCalibration->IsAutoCalibrating())
@@ -501,6 +505,7 @@ Ogre::Quaternion Oculus::getOrientation() const
       Ogre::LogManager::getSingleton().logMessage("Oculus: Sensor not found.");
    } else {
     ovrQuatf q = state.HeadPose.ThePose.Orientation;// get pose
+
     return Ogre::Quaternion(q.w, q.x, q.y, q.z);
    }
 
@@ -512,6 +517,14 @@ Ogre::Quaternion Oculus::getOrientation() const
   }
 
     return Ogre::Quaternion::IDENTITY;  
+}
+
+ovrPosef Oculus::getPosition() const
+{
+  ovrEyeType eye; 
+  ovrPosef pose = ovrHmd_GetHmdPosePerEye(m_hmd, eye);
+
+  return pose;
 }
 
 Ogre::CompositorInstance *Oculus::getCompositor(unsigned int i)
