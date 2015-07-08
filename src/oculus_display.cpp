@@ -294,7 +294,6 @@ void OculusDisplay::updateCamera()
   Ogre::Vector3 pos;
   Ogre::Quaternion ori;
 
-
   if ( follow_cam_property_->getBool() )
   {
     const Ogre::Camera *cam = context_->getViewManager()->getCurrent()->getCamera();
@@ -303,8 +302,8 @@ void OculusDisplay::updateCamera()
   }
   else
   {
-    context_->getFrameManager()->getTransform( tf_frame_property_->getStdString(),
-                                               ros::Time(), pos, ori );
+    context_->getFrameManager()->getTransform( tf_frame_property_->getStdString(), ros::Time(), pos, ori );
+
     Ogre::Quaternion r;
     r.FromAngleAxis( Ogre::Radian(M_PI*0.5), Ogre::Vector3::UNIT_X );
     ori = ori * r;
@@ -313,9 +312,7 @@ void OculusDisplay::updateCamera()
   }
 
   pos += offset_property_->getVector();
-
-  scene_node_->setPosition( pos );
-
+  scene_node_->setPosition( pos ); //  -> position of oculus_nav
 
   if ( horizontal_property_->getBool() )
   {
@@ -353,16 +350,27 @@ void OculusDisplay::updateCamera()
     pose.frame_id_ = context_->getFixedFrame().toStdString();
     pose.child_frame_id_ = pub_tf_frame_property_->getStdString();
     pose.stamp_ = ros::Time::now();
-    ori = ori * oculus_->getOrientation();
+
+    Ogre::Vector3 test_pos;
+    Ogre::Quaternion test_ori;
+
+    const Ogre::Camera *caml = oculus_->getCamera(0); // left eye position
+    const Ogre::Camera *camr = oculus_->getCamera(1); // right eye position
+
+    test_pos = (caml->getDerivedPosition() + camr->getDerivedPosition()) / 2; // eye position average
+    test_ori = caml->getDerivedOrientation(); 
+
     Ogre::Quaternion r;
     r.FromAngleAxis( Ogre::Radian(M_PI*0.5), Ogre::Vector3::UNIT_Y );
-    ori = ori * r;
+    test_ori = test_ori * r;
     r.FromAngleAxis( Ogre::Radian(-M_PI*0.5), Ogre::Vector3::UNIT_X );
-    ori = ori * r;
-    //Ogre::Matrix3
-    pose.setRotation( tf::Quaternion( ori.x, ori.y, ori.z, ori.w ) );
-    pose.setOrigin( tf::Vector3( pos.x, pos.y, pos.z ) );
+    test_ori = test_ori * r;   
+    
+    pose.setRotation( tf::Quaternion( test_ori.x, test_ori.y, test_ori.z, test_ori.w ) );
+    pose.setOrigin( tf::Vector3( test_pos.x, test_pos.y, test_pos.z ) );
+    
     tf_pub_.sendTransform( pose );
+    
   }
 }
 
