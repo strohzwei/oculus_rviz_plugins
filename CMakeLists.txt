@@ -43,8 +43,7 @@ include_directories(include
   ${BOOST_INCLUDE_DIRS}
 )
 
-# run Qt moc generator
-qt4_wrap_cpp(MOC_FILES
+qt5_wrap_cpp(MOC_FILES
   include/oculus_rviz_plugins/oculus_display.h
   include/oculus_rviz_plugins/fixed_view_controller.h
 )
